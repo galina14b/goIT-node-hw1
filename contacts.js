@@ -23,7 +23,7 @@ function removeContact(contactId) {
   fs.readFile(contactsPath)
     .then(data => JSON.parse(data))
     .then(data => data.filter(item => item.id !== contactId))
-    .then(data => fs.writeFile(contactsPath, JSON.stringify(data), (error) => {
+    .then(data => fs.writeFile(contactsPath, JSON.stringify(data, null, 2), (error) => {
         if (error) {console.log(error.message)}
     }))
     
@@ -35,17 +35,16 @@ function removeContact(contactId) {
 
 async function addContact(name, email, phone) {
   const newContact = {
-    "id": nanoid(),
-    "name": name,
-    "email": email,
-    "phone": phone,
+    id: nanoid(),
+    name,
+    email,
+    phone,
   };
 
   let contacts = await listContacts();
   contacts.push(newContact);
-  let compactContacts = JSON.stringify(contacts);
 
-  fs.writeFile(contactsPath, compactContacts, (error) => {
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2), (error) => {
     if (error) {
       console.log(error)
     }
